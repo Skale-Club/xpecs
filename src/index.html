@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Xpecs</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <aside id="side">
+    <div class="brand">
+      <img src="logo.png" alt="">
+      <div>
+        <b>Xpecs</b>
+        <small data-t="tagline"></small>
+      </div>
+    </div>
+    <nav id="nav"></nav>
+    <div class="side-foot">
+      <select id="lang" aria-label="Language">
+        <option value="en">English</option>
+        <option value="pt">Português</option>
+        <option value="es">Español</option>
+      </select>
+      <span class="ver"></span>
+    </div>
+  </aside>
+  <main>
+    <div id="update-bar" hidden></div>
+    <header>
+      <h1 id="title"></h1>
+      <button id="export" class="btn primary"></button>
+    </header>
+    <div id="page"></div>
+  </main>
+  <div id="toast"></div>
+  <script src="i18n.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

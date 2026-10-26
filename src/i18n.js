@@ -1,0 +1,177 @@
+'use strict';
+
+// Interface texts (ui) and translations of the English labels the Rust side
+// sends (labels). Anything missing falls back to English.
+const I18N = {
+  en: {
+    locale: 'en-US',
+    ui: {
+      tagline: 'System information',
+      summary: 'Summary', cpu: 'Processor', board: 'Motherboard', memory: 'Memory', gpu: 'Graphics',
+      storage: 'Storage', network: 'Network', os: 'Operating system', sensors: 'Sensors', bench: 'Benchmarks',
+      export: 'Export report', loading: 'Reading the hardware…', waiting: 'Waiting for the first readings…',
+      live: 'Live', copied: 'Copied', saved: 'Report saved to {path}', failed: 'Could not save: {error}',
+      coresHybrid: '{cores} cores ({p}P + {e}E) · {threads} threads', cores: '{cores} cores · {threads} threads',
+      base: '{ghz} base', modules: '{n} × {size} · {speed} MT/s', vram: '{size} VRAM', build: 'Build {b}',
+      displays: 'Displays', noData: 'Not available',
+      cpuUsage: 'CPU usage', cpuClock: 'CPU clock', memUsage: 'Memory', gpuTemp: 'GPU temperature',
+      gpuUsage: 'GPU usage', gpuPower: 'GPU power', diskTemp: 'Drive temperature',
+      sensor: 'Sensor', current: 'Current', min: 'Min', max: 'Max', reset: 'Reset min/max',
+      lhmNote: 'CPU package temperature, fans and voltages need a hardware driver, which Xpecs leaves out to stay portable. Open LibreHardwareMonitor (free and portable) and its sensors appear here automatically.',
+      run: 'Run', runAll: 'Run all', running: 'Running…', notRun: 'Not run yet',
+      higher: 'Higher is better', lower: 'Lower is better',
+      memRead: 'Read', memWrite: 'Write', memCopy: 'Copy', memLatency: 'Latency',
+      memNote: '512 MB buffer on every thread, larger than any cache.',
+      latNote: 'Random access through 256 MB.',
+      cpuInt1: 'Integer · 1 thread', cpuIntN: 'Integer · all threads',
+      cpuFp1: 'Floating point · 1 thread', cpuFpN: 'Floating point · all threads',
+      intNote: 'Hash rounds (64-bit integer).', fpNote: 'Mandelbrot iterations (FP64).',
+      scaling: 'Scaling ×{x}', stress: 'Stress test', start: 'Start', stop: 'Stop',
+      stressNote: 'Loads every thread at 100%. Watch the temperatures and stop if anything looks wrong.',
+      busyStress: 'Stop the stress test to run benchmarks.',
+      generated: 'Generated', snapshot: 'Sensors snapshot', results: 'Benchmark results', value: 'Value',
+      days: 'd', hours: 'h', minutes: 'min',
+      updateAvailable: 'Xpecs {v} is available.', updateNow: 'Update now', updating: 'Updating…',
+      updateFailed: 'Update failed: {error}',
+    },
+    labels: {},
+  },
+  pt: {
+    locale: 'pt-BR',
+    ui: {
+      tagline: 'Informações do sistema',
+      summary: 'Resumo', cpu: 'Processador', board: 'Placa-mãe', memory: 'Memória', gpu: 'Vídeo',
+      storage: 'Armazenamento', network: 'Rede', os: 'Sistema operacional', sensors: 'Sensores', bench: 'Benchmarks',
+      export: 'Exportar relatório', loading: 'Lendo o hardware…', waiting: 'Aguardando as primeiras leituras…',
+      live: 'Ao vivo', copied: 'Copiado', saved: 'Relatório salvo em {path}', failed: 'Não foi possível salvar: {error}',
+      coresHybrid: '{cores} núcleos ({p}P + {e}E) · {threads} threads', cores: '{cores} núcleos · {threads} threads',
+      base: '{ghz} base', modules: '{n} × {size} · {speed} MT/s', vram: '{size} de VRAM', build: 'Build {b}',
+      displays: 'Monitores', noData: 'Indisponível',
+      cpuUsage: 'Uso da CPU', cpuClock: 'Clock da CPU', memUsage: 'Memória', gpuTemp: 'Temperatura da GPU',
+      gpuUsage: 'Uso da GPU', gpuPower: 'Consumo da GPU', diskTemp: 'Temperatura do disco',
+      sensor: 'Sensor', current: 'Atual', min: 'Mín', max: 'Máx', reset: 'Zerar mín/máx',
+      lhmNote: 'Temperatura do encapsulamento da CPU, ventoinhas e voltagens exigem um driver de hardware, que o Xpecs não usa para continuar portátil. Abra o LibreHardwareMonitor (gratuito e portátil) e os sensores dele aparecem aqui automaticamente.',
+      run: 'Rodar', runAll: 'Rodar todos', running: 'Rodando…', notRun: 'Ainda não rodou',
+      higher: 'Maior é melhor', lower: 'Menor é melhor',
+      memRead: 'Leitura', memWrite: 'Escrita', memCopy: 'Cópia', memLatency: 'Latência',
+      memNote: 'Buffer de 512 MB em todas as threads, maior que qualquer cache.',
+      latNote: 'Acesso aleatório em 256 MB.',
+      cpuInt1: 'Inteiro · 1 thread', cpuIntN: 'Inteiro · todas as threads',
+      cpuFp1: 'Ponto flutuante · 1 thread', cpuFpN: 'Ponto flutuante · todas as threads',
+      intNote: 'Rodadas de hash (inteiro de 64 bits).', fpNote: 'Iterações de Mandelbrot (FP64).',
+      scaling: 'Escala ×{x}', stress: 'Teste de estresse', start: 'Iniciar', stop: 'Parar',
+      stressNote: 'Coloca todas as threads em 100%. Acompanhe as temperaturas e pare se algo parecer errado.',
+      busyStress: 'Pare o teste de estresse para rodar benchmarks.',
+      generated: 'Gerado em', snapshot: 'Leitura dos sensores', results: 'Resultados dos benchmarks', value: 'Valor',
+      days: 'd', hours: 'h', minutes: 'min',
+      updateAvailable: 'O Xpecs {v} está disponível.', updateNow: 'Atualizar agora', updating: 'Atualizando…',
+      updateFailed: 'Não foi possível atualizar: {error}',
+    },
+    labels: {
+      'Processor': 'Processador', 'Name': 'Nome', 'Vendor': 'Fabricante', 'Family / model / stepping': 'Família / modelo / stepping',
+      'Cores': 'Núcleos', 'Threads': 'Threads', 'Base clock': 'Clock base', 'Socket': 'Soquete',
+      'Virtualization': 'Virtualização', 'Enabled': 'Ativada', 'Disabled': 'Desativada', 'Caches': 'Caches',
+      'L1 data': 'L1 dados', 'L1 instruction': 'L1 instruções', 'Instruction sets': 'Conjuntos de instruções',
+      'Supported': 'Suportados', 'Motherboard': 'Placa-mãe', 'Manufacturer': 'Fabricante', 'Model': 'Modelo',
+      'Version': 'Versão', 'Release date': 'Data de lançamento', 'System': 'Sistema', 'Computer name': 'Nome do computador',
+      'System type': 'Tipo de sistema', 'Overview': 'Visão geral', 'Installed': 'Instalada', 'Usable': 'Utilizável',
+      'Slots used': 'Slots usados', 'Type': 'Tipo', 'Speed': 'Velocidade', 'Configured speed': 'Velocidade configurada',
+      'Part number': 'Código da peça', 'Voltage': 'Tensão', 'Form factor': 'Formato', 'Bank': 'Banco', 'Size': 'Tamanho',
+      'Video memory': 'Memória de vídeo', 'Driver version': 'Versão do driver', 'Driver date': 'Data do driver',
+      'Current mode': 'Modo atual', 'NVIDIA driver': 'Driver NVIDIA', 'Max GPU clock': 'Clock máximo da GPU',
+      'Max memory clock': 'Clock máximo da memória', 'Power limit': 'Limite de energia', 'Displays': 'Monitores',
+      'Disk number': 'Número do disco', 'Interface': 'Interface', 'Capacity': 'Capacidade', 'Health': 'Saúde',
+      'Healthy': 'Saudável', 'Warning': 'Atenção', 'Unhealthy': 'Com problemas', 'Unknown': 'Desconhecido',
+      'Temperature': 'Temperatura', 'Volumes': 'Volumes (livre / total)', 'Connection': 'Conexão', 'Status': 'Status',
+      'Connected': 'Conectado', 'Disconnected': 'Desconectado', 'Media disconnected': 'Cabo desconectado',
+      'Link speed': 'Velocidade do link', 'MAC address': 'Endereço MAC', 'Yes': 'Sim', 'No': 'Não',
+      'Edition': 'Edição', 'Architecture': 'Arquitetura', 'Install date': 'Instalado em', 'Last boot': 'Última inicialização',
+      'Windows folder': 'Pasta do Windows', 'Audio devices': 'Dispositivos de áudio', 'Device': 'Dispositivo',
+      'CPU threads': 'Threads da CPU', 'CPU thread clocks': 'Clock por thread', 'Memory': 'Memória',
+      'Total usage': 'Uso total', 'Effective clock': 'Clock efetivo', 'Fastest thread clock': 'Thread mais rápida',
+      'Read speed': 'Leitura', 'Write speed': 'Escrita', 'Activity': 'Atividade', 'Download': 'Download', 'Upload': 'Upload',
+      'Usage': 'Uso', 'Used': 'Em uso', 'Available': 'Disponível', 'Committed': 'Comprometida', 'Uptime': 'Tempo ligado',
+      'Memory controller': 'Controlador de memória', 'Core clock': 'Clock do núcleo', 'Memory clock': 'Clock da memória',
+      'Power': 'Consumo', 'Fan': 'Ventoinha', 'Memory used': 'Memória em uso',
+    },
+  },
+  es: {
+    locale: 'es-ES',
+    ui: {
+      tagline: 'Información del sistema',
+      summary: 'Resumen', cpu: 'Procesador', board: 'Placa base', memory: 'Memoria', gpu: 'Gráficos',
+      storage: 'Almacenamiento', network: 'Red', os: 'Sistema operativo', sensors: 'Sensores', bench: 'Benchmarks',
+      export: 'Exportar informe', loading: 'Leyendo el hardware…', waiting: 'Esperando las primeras lecturas…',
+      live: 'En vivo', copied: 'Copiado', saved: 'Informe guardado en {path}', failed: 'No se pudo guardar: {error}',
+      coresHybrid: '{cores} núcleos ({p}P + {e}E) · {threads} hilos', cores: '{cores} núcleos · {threads} hilos',
+      base: '{ghz} base', modules: '{n} × {size} · {speed} MT/s', vram: '{size} de VRAM', build: 'Compilación {b}',
+      displays: 'Pantallas', noData: 'No disponible',
+      cpuUsage: 'Uso de CPU', cpuClock: 'Reloj de CPU', memUsage: 'Memoria', gpuTemp: 'Temperatura de GPU',
+      gpuUsage: 'Uso de GPU', gpuPower: 'Consumo de GPU', diskTemp: 'Temperatura del disco',
+      sensor: 'Sensor', current: 'Actual', min: 'Mín', max: 'Máx', reset: 'Reiniciar mín/máx',
+      lhmNote: 'La temperatura del encapsulado de la CPU, los ventiladores y los voltajes necesitan un controlador de hardware, que Xpecs no usa para seguir siendo portátil. Abre LibreHardwareMonitor (gratuito y portátil) y sus sensores aparecerán aquí automáticamente.',
+      run: 'Ejecutar', runAll: 'Ejecutar todo', running: 'Ejecutando…', notRun: 'Aún no ejecutado',
+      higher: 'Más es mejor', lower: 'Menos es mejor',
+      memRead: 'Lectura', memWrite: 'Escritura', memCopy: 'Copia', memLatency: 'Latencia',
+      memNote: 'Búfer de 512 MB en todos los hilos, mayor que cualquier caché.',
+      latNote: 'Acceso aleatorio en 256 MB.',
+      cpuInt1: 'Entero · 1 hilo', cpuIntN: 'Entero · todos los hilos',
+      cpuFp1: 'Coma flotante · 1 hilo', cpuFpN: 'Coma flotante · todos los hilos',
+      intNote: 'Rondas de hash (entero de 64 bits).', fpNote: 'Iteraciones de Mandelbrot (FP64).',
+      scaling: 'Escala ×{x}', stress: 'Prueba de estrés', start: 'Iniciar', stop: 'Detener',
+      stressNote: 'Pone todos los hilos al 100%. Vigila las temperaturas y detén la prueba si algo no se ve bien.',
+      busyStress: 'Detén la prueba de estrés para ejecutar benchmarks.',
+      generated: 'Generado el', snapshot: 'Lectura de sensores', results: 'Resultados de benchmarks', value: 'Valor',
+      days: 'd', hours: 'h', minutes: 'min',
+      updateAvailable: 'Xpecs {v} está disponible.', updateNow: 'Actualizar ahora', updating: 'Actualizando…',
+      updateFailed: 'No se pudo actualizar: {error}',
+    },
+    labels: {
+      'Processor': 'Procesador', 'Name': 'Nombre', 'Vendor': 'Fabricante', 'Family / model / stepping': 'Familia / modelo / stepping',
+      'Cores': 'Núcleos', 'Threads': 'Hilos', 'Base clock': 'Reloj base', 'Socket': 'Zócalo',
+      'Virtualization': 'Virtualización', 'Enabled': 'Activada', 'Disabled': 'Desactivada', 'Caches': 'Cachés',
+      'L1 data': 'L1 datos', 'L1 instruction': 'L1 instrucciones', 'Instruction sets': 'Conjuntos de instrucciones',
+      'Supported': 'Compatibles', 'Motherboard': 'Placa base', 'Manufacturer': 'Fabricante', 'Model': 'Modelo',
+      'Version': 'Versión', 'Release date': 'Fecha de publicación', 'System': 'Sistema', 'Computer name': 'Nombre del equipo',
+      'System type': 'Tipo de sistema', 'Overview': 'Resumen', 'Installed': 'Instalada', 'Usable': 'Utilizable',
+      'Slots used': 'Ranuras usadas', 'Type': 'Tipo', 'Speed': 'Velocidad', 'Configured speed': 'Velocidad configurada',
+      'Part number': 'Número de pieza', 'Voltage': 'Voltaje', 'Form factor': 'Formato', 'Bank': 'Banco', 'Size': 'Tamaño',
+      'Video memory': 'Memoria de vídeo', 'Driver version': 'Versión del controlador', 'Driver date': 'Fecha del controlador',
+      'Current mode': 'Modo actual', 'NVIDIA driver': 'Controlador NVIDIA', 'Max GPU clock': 'Reloj máximo de GPU',
+      'Max memory clock': 'Reloj máximo de memoria', 'Power limit': 'Límite de potencia', 'Displays': 'Pantallas',
+      'Disk number': 'Número de disco', 'Interface': 'Interfaz', 'Capacity': 'Capacidad', 'Health': 'Estado',
+      'Healthy': 'Correcto', 'Warning': 'Advertencia', 'Unhealthy': 'Con problemas', 'Unknown': 'Desconocido',
+      'Temperature': 'Temperatura', 'Volumes': 'Volúmenes (libre / total)', 'Connection': 'Conexión', 'Status': 'Estado',
+      'Connected': 'Conectado', 'Disconnected': 'Desconectado', 'Media disconnected': 'Cable desconectado',
+      'Link speed': 'Velocidad del enlace', 'MAC address': 'Dirección MAC', 'Gateway': 'Puerta de enlace', 'Yes': 'Sí',
+      'Edition': 'Edición', 'Build': 'Compilación', 'Architecture': 'Arquitectura', 'Install date': 'Instalado el',
+      'Last boot': 'Último arranque', 'Windows folder': 'Carpeta de Windows', 'Audio devices': 'Dispositivos de audio',
+      'Device': 'Dispositivo', 'CPU threads': 'Hilos de la CPU', 'CPU thread clocks': 'Reloj por hilo', 'Memory': 'Memoria',
+      'Total usage': 'Uso total', 'Effective clock': 'Reloj efectivo', 'Fastest thread clock': 'Hilo más rápido',
+      'Read speed': 'Lectura', 'Write speed': 'Escritura', 'Activity': 'Actividad', 'Download': 'Descarga', 'Upload': 'Subida',
+      'Usage': 'Uso', 'Used': 'En uso', 'Available': 'Disponible', 'Committed': 'Comprometida', 'Uptime': 'Tiempo encendido',
+      'Memory controller': 'Controlador de memoria', 'Core clock': 'Reloj del núcleo', 'Memory clock': 'Reloj de memoria',
+      'Power': 'Consumo', 'Fan': 'Ventilador', 'Memory used': 'Memoria en uso',
+    },
+  },
+};
+
+let language = 'en';
+
+function setLanguage(code) {
+  language = I18N[code] ? code : 'en';
+  document.documentElement.lang = language;
+}
+
+/** Interface text with {placeholders}. */
+function t(key, vars = {}) {
+  const text = I18N[language].ui[key] ?? I18N.en.ui[key] ?? key;
+  return text.replace(/\{(\w+)\}/g, (_, name) => vars[name] ?? '');
+}
+
+/** A label or value from the Rust side, translated when we know it. */
+function tr(text) {
+  return I18N[language].labels[text] ?? text;
+}
+
+const locale = () => I18N[language].locale;

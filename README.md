@@ -8,7 +8,7 @@ Made by **[Skale Club](https://skale.club)**.
 
 ## Download
 
-Get the latest `Xpecs.exe` from **[Releases](https://github.com/skaleclub/xpecs/releases/latest)**. It keeps itself up to date: when a new version is out, the app offers it (at the top of the window) and swaps itself in place, keeping your settings. Every update is signed and checked before it is used.
+Get the latest `Xpecs.exe` from **[Releases](https://github.com/Skale-Club/xpecs/releases/latest)**. It keeps itself up to date: when a new version is out, the app offers it (at the top of the window) and swaps itself in place, keeping your settings. Every update is signed and checked before it is used.
 
 ## Run it
 
@@ -93,7 +93,7 @@ The private key lives outside the repository, in `%USERPROFILE%\.tauri\skale-x-u
 
 ## Português
 
-**Download:** [Releases](https://github.com/skaleclub/xpecs/releases/latest). O app avisa quando há versão nova e se atualiza sozinho, mantendo as configurações.
+**Download:** [Releases](https://github.com/Skale-Club/xpecs/releases/latest). O app avisa quando há versão nova e se atualiza sozinho, mantendo as configurações.
 
 O Xpecs mostra informações do sistema, sensores ao vivo e benchmarks, no
 estilo do AIDA64. É um exe pequeno, sem instalação, sem driver e sem precisar
@@ -111,7 +111,7 @@ de administrador.
 
 ## Español
 
-**Descarga:** [Releases](https://github.com/skaleclub/xpecs/releases/latest). La app avisa cuando hay una versión nueva y se actualiza sola, conservando la configuración.
+**Descarga:** [Releases](https://github.com/Skale-Club/xpecs/releases/latest). La app avisa cuando hay una versión nueva y se actualiza sola, conservando la configuración.
 
 Xpecs muestra información del sistema, sensores en vivo y benchmarks, al
 estilo de AIDA64. Es un exe pequeño, sin instalación, sin controlador y sin

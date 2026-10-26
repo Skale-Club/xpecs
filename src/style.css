@@ -1,5 +1,6 @@
 /* Skale Club palette: navy surfaces, CTA blue #5173D6, soft blue #8FA9EE. */
 :root {
+  color-scheme: dark;
   --bg: #0b111c;
   --side: #0c1424;
   --card: #111a2c;
@@ -39,7 +40,7 @@ button, select { font: inherit; color: inherit; }
 /* ---------- sidebar ---------- */
 
 #side {
-  width: 236px;
+  width: 248px;
   flex: none;
   display: flex;
   flex-direction: column;
@@ -315,7 +316,7 @@ table.sensors canvas { display: block; width: 120px; height: 24px; margin-left: 
 .skale small { color: var(--muted); font-weight: 400; font-size: 11px; }
 /* Design review: tiles share one row when they fit, sensor names stay on one
    line (full name in the tooltip). */
-.tiles { grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); }
+.tiles { grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); }
 table.sensors { table-layout: fixed; }
 table.sensors th:nth-child(2), table.sensors th:nth-child(3), table.sensors th:nth-child(4) { width: 17%; }
 table.sensors th:nth-child(5) { width: 64px; }

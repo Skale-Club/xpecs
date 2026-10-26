@@ -4,6 +4,8 @@ Portable system information, live sensors and benchmarks for Windows, in the
 spirit of AIDA64. One small exe: no installer, no driver, no administrator
 rights. 🇧🇷 [Português](#português) · 🇪🇸 [Español](#español)
 
+Made by **[Skale Club](https://skale.club)**.
+
 ## Download
 
 Get the latest `Xpecs.exe` from **[Releases](https://github.com/skaleclub/xpecs/releases/latest)**. It keeps itself up to date: when a new version is out, the app offers it (at the top of the window) and swaps itself in place, keeping your settings. Every update is signed and checked before it is used.
@@ -123,3 +125,7 @@ necesidad de administrador.
   temperaturas de la GPU y de los discos NVMe/SATA.
 - Benchmarks: lectura, escritura, copia y latencia de memoria; CPU entero y
   coma flotante en 1 hilo y en todos; prueba de estrés.
+
+---
+
+© 2026 [Skale Club](https://skale.club)

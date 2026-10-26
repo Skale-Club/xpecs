@@ -11,7 +11,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Xpecs",
+        "title": "Xpecs · Skale Club",
         "width": 1280,
         "height": 820,
         "minWidth": 980,
@@ -27,6 +27,9 @@
   },
   "bundle": {
     "active": false,
+    "publisher": "Skale Club",
+    "copyright": "© 2026 Skale Club",
+    "homepage": "https://skale.club",
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",

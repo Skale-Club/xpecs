@@ -305,3 +305,21 @@ table.sensors canvas { display: block; width: 120px; height: 24px; margin-left: 
   max-width: 80vw;
 }
 #toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---------- Skale Club ---------- */
+
+.skale { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 20px; border: 0; border-top: 1px solid var(--line); background: transparent; color: var(--fg); cursor: pointer; text-align: left; }
+.skale:hover { background: rgba(143, 169, 238, 0.06); }
+.skale img { width: 30px; height: 30px; flex: none; }
+.skale span { display: flex; flex-direction: column; line-height: 1.2; font-weight: 600; font-size: 13px; }
+.skale small { color: var(--muted); font-weight: 400; font-size: 11px; }
+/* Design review: tiles share one row when they fit, sensor names stay on one
+   line (full name in the tooltip). */
+.tiles { grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); }
+table.sensors { table-layout: fixed; }
+table.sensors th:nth-child(2), table.sensors th:nth-child(3), table.sensors th:nth-child(4) { width: 17%; }
+table.sensors th:nth-child(5) { width: 64px; }
+table.sensors td:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+table.sensors td.sp { width: auto; }
+table.sensors canvas { width: 56px; }
+table.sensors td.cur, table.sensors td.mm { padding-left: 8px; white-space: nowrap; }

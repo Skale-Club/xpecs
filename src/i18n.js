@@ -6,13 +6,13 @@ const I18N = {
   en: {
     locale: 'en-US',
     ui: {
-      tagline: 'System information',
+      tagline: 'System information', madeBy: 'Made by',
       summary: 'Summary', cpu: 'Processor', board: 'Motherboard', memory: 'Memory', gpu: 'Graphics',
       storage: 'Storage', network: 'Network', os: 'Operating system', sensors: 'Sensors', bench: 'Benchmarks',
       export: 'Export report', loading: 'Reading the hardware…', waiting: 'Waiting for the first readings…',
       live: 'Live', copied: 'Copied', saved: 'Report saved to {path}', failed: 'Could not save: {error}',
       coresHybrid: '{cores} cores ({p}P + {e}E) · {threads} threads', cores: '{cores} cores · {threads} threads',
-      base: '{ghz} base', modules: '{n} × {size} · {speed} MT/s', vram: '{size} VRAM', build: 'Build {b}',
+      base: '{ghz} base', modules: '{n} × {size} · {speed} MT/s', vram: '{size} VRAM', displayCount: '{n} displays', display1: '1 display', build: 'Build {b}',
       displays: 'Displays', noData: 'Not available',
       cpuUsage: 'CPU usage', cpuClock: 'CPU clock', memUsage: 'Memory', gpuTemp: 'GPU temperature',
       gpuUsage: 'GPU usage', gpuPower: 'GPU power', diskTemp: 'Drive temperature',
@@ -39,13 +39,13 @@ const I18N = {
   pt: {
     locale: 'pt-BR',
     ui: {
-      tagline: 'Informações do sistema',
+      tagline: 'Informações do sistema', madeBy: 'Feito pela',
       summary: 'Resumo', cpu: 'Processador', board: 'Placa-mãe', memory: 'Memória', gpu: 'Vídeo',
       storage: 'Armazenamento', network: 'Rede', os: 'Sistema operacional', sensors: 'Sensores', bench: 'Benchmarks',
       export: 'Exportar relatório', loading: 'Lendo o hardware…', waiting: 'Aguardando as primeiras leituras…',
       live: 'Ao vivo', copied: 'Copiado', saved: 'Relatório salvo em {path}', failed: 'Não foi possível salvar: {error}',
       coresHybrid: '{cores} núcleos ({p}P + {e}E) · {threads} threads', cores: '{cores} núcleos · {threads} threads',
-      base: '{ghz} base', modules: '{n} × {size} · {speed} MT/s', vram: '{size} de VRAM', build: 'Build {b}',
+      base: '{ghz} base', modules: '{n} × {size} · {speed} MT/s', vram: '{size} de VRAM', displayCount: '{n} monitores', display1: '1 monitor', build: 'Build {b}',
       displays: 'Monitores', noData: 'Indisponível',
       cpuUsage: 'Uso da CPU', cpuClock: 'Clock da CPU', memUsage: 'Memória', gpuTemp: 'Temperatura da GPU',
       gpuUsage: 'Uso da GPU', gpuPower: 'Consumo da GPU', diskTemp: 'Temperatura do disco',
@@ -98,13 +98,13 @@ const I18N = {
   es: {
     locale: 'es-ES',
     ui: {
-      tagline: 'Información del sistema',
+      tagline: 'Información del sistema', madeBy: 'Hecho por',
       summary: 'Resumen', cpu: 'Procesador', board: 'Placa base', memory: 'Memoria', gpu: 'Gráficos',
       storage: 'Almacenamiento', network: 'Red', os: 'Sistema operativo', sensors: 'Sensores', bench: 'Benchmarks',
       export: 'Exportar informe', loading: 'Leyendo el hardware…', waiting: 'Esperando las primeras lecturas…',
       live: 'En vivo', copied: 'Copiado', saved: 'Informe guardado en {path}', failed: 'No se pudo guardar: {error}',
       coresHybrid: '{cores} núcleos ({p}P + {e}E) · {threads} hilos', cores: '{cores} núcleos · {threads} hilos',
-      base: '{ghz} base', modules: '{n} × {size} · {speed} MT/s', vram: '{size} de VRAM', build: 'Compilación {b}',
+      base: '{ghz} base', modules: '{n} × {size} · {speed} MT/s', vram: '{size} de VRAM', displayCount: '{n} monitores', display1: '1 monitor', build: 'Compilación {b}',
       displays: 'Pantallas', noData: 'No disponible',
       cpuUsage: 'Uso de CPU', cpuClock: 'Reloj de CPU', memUsage: 'Memoria', gpuTemp: 'Temperatura de GPU',
       gpuUsage: 'Uso de GPU', gpuPower: 'Consumo de GPU', diskTemp: 'Temperatura del disco',

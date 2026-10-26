@@ -104,6 +104,11 @@ fn set_stress(running: bool) {
     }
 }
 
+/// Opens the Skale Club website in the default browser.
+#[tauri::command]
+fn open_site() {
+    let _ = Command::new("explorer.exe").arg("https://skale.club").spawn();
+}
 /// Writes the HTML report into a "reports" folder next to the executable and
 /// opens it in the default browser.
 #[tauri::command]
@@ -164,6 +169,7 @@ fn main() {
             run_benchmark,
             set_stress,
             save_report,
+            open_site,
             check_update,
             install_update
         ])

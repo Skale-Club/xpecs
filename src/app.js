@@ -226,6 +226,19 @@ function render() {
 
 const loading = (key) => `<p class="loading">${esc(t(key))}</p>`;
 
+/** Shorter, friendlier hardware names for the summary cards. */
+function cleanName(name) {
+  return String(name || '')
+    .replace(/\((R|TM|tm|r)\)/g, '')
+    .replace(/\b\d+(st|nd|rd|th) Gen\s+/i, '')
+    .replace(/Micro-Star International Co\.?,? Ltd\.?/i, 'MSI')
+    .replace(/ASUSTeK COMPUTER INC\.?/i, 'ASUS')
+    .replace(/Gigabyte Technology Co\.?,? Ltd\.?/i, 'Gigabyte')
+    .replace(/ASRock Incorporation/i, 'ASRock')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function summaryCard(page, title, main, subs) {
   return `<button class="sum-card" data-go="${page}"><span class="ico">${svg(ICONS[page])}</span><span>` +
     `<div class="t">${esc(title)}</div><div class="m">${esc(main || t('noData'))}</div>` +
@@ -248,21 +261,21 @@ function renderSummary() {
     : t('cores', { cores: cpu.cores, threads: cpu.threads });
   const adapters = gpu.adapters || [];
   const cards = [
-    summaryCard('cpu', t('cpu'), cpu.name, [cores, cpu.baseMhz ? t('base', { ghz: `${fixed(cpu.baseMhz / 1000, 2)} GHz` }) : '']),
+    summaryCard('cpu', t('cpu'), cleanName(cpu.name), [cores, cpu.baseMhz ? t('base', { ghz: `${fixed(cpu.baseMhz / 1000, 2)} GHz` }) : '']),
     summaryCard('gpu', t('gpu'), adapters.map((a) => a.name).join(' + '), [
       adapters[0]?.vram ? t('vram', { size: bytes(adapters[0].vram) }) : '',
-      (gpu.displays || []).join(' · '),
+      gpu.displays?.length ? (gpu.displays.length === 1 ? t('display1') : t('displayCount', { n: gpu.displays.length })) : '',
     ]),
     summaryCard('memory', t('memory'), mem.total ? `${bytes(mem.total)} ${mem.type || ''}` : '', [
       mem.modules ? t('modules', { n: mem.modules, size: bytes(mem.moduleSize), speed: mem.speed }) : '',
     ]),
-    summaryCard('board', t('board'), board.board, [
+    summaryCard('board', t('board'), cleanName(board.board), [
       board.bios ? `BIOS ${board.bios}${board.biosDate ? ` · ${board.biosDate}` : ''}` : '',
     ]),
     summaryCard('storage', t('storage'), disks[0] ? `${disks[0].name}` : '',
       disks.map((d, i) => (i === 0 ? `${bytes(d.size)} · ${[d.bus, d.media].filter(Boolean).join(' ')}` : `${d.name} · ${bytes(d.size)}`)).slice(0, 5)),
     summaryCard('os', t('os'), os.name, [[os.version, os.build && t('build', { b: os.build })].filter(Boolean).join(' · '), os.arch]),
-    summaryCard('network', t('network'), net?.name, [net?.ipv4, net?.speed]),
+    summaryCard('network', t('network'), cleanName(net?.name), [net?.ipv4, net?.speed]),
   ];
 
   const firstDiskTemp = [...readings.keys()].find((id) => /^disk\d+\.temp$/.test(id));
@@ -376,7 +389,7 @@ function renderSensors() {
     const rows = list.map((x) => {
       const id = esc(x.r.id);
       const sparkCell = x.r.kind === 'time' ? '' : `<canvas data-spark="${id}"></canvas>`;
-      return `<tr><td>${esc(tr(x.r.name))}</td><td class="cur${tempClass(x)}" data-v="${id}"></td>` +
+      return `<tr><td title="${esc(tr(x.r.name))}">${esc(tr(x.r.name))}</td><td class="cur${tempClass(x)}" data-v="${id}"></td>` +
         `<td class="mm" data-min="${id}"></td><td class="mm" data-max="${id}"></td><td class="sp">${sparkCell}</td></tr>`;
     }).join('');
     return `<div class="card"><h3>${esc(tr(group))}</h3><table class="sensors">${head}${rows}</table></div>`;
@@ -500,7 +513,7 @@ function reportHtml() {
     'h3{margin:18px 0 6px;font-size:14px;color:#3b5bbe}.meta{color:#6b7488}table{border-collapse:collapse;width:100%}' +
     'td{padding:5px 10px 5px 0;border-bottom:1px solid #eef1f7;vertical-align:top}td:first-child{color:#6b7488;width:34%}';
   return `<!doctype html><html lang="${language}"><head><meta charset="utf-8"><title>Xpecs report</title>` +
-    `<style>${css}</style></head><body>${body}</body></html>`;
+    `<style>${css}</style></head><body>${body}<footer style="margin-top:40px;padding-top:12px;border-top:1px solid #dfe6f5;color:#6b7488;font-size:12px">Xpecs · <a href="https://skale.club">Skale Club</a></footer></body></html>`;
 }
 
 async function exportReport() {
@@ -540,6 +553,7 @@ pageEl.addEventListener('click', (e) => {
 });
 
 $('export').addEventListener('click', exportReport);
+$('skale').addEventListener('click', () => invoke('open_site'));
 
 $('lang').addEventListener('change', (e) => {
   setLanguage(e.target.value);

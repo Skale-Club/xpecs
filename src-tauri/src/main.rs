@@ -4,13 +4,14 @@
 
 mod bench;
 mod info;
+mod portable;
 mod sensors;
 mod updater;
 mod winapi;
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use std::{fs, path::PathBuf, process::Command, sync::Mutex};
+use std::{fs, process::Command, sync::Mutex};
 use tauri::{AppHandle, Emitter, Manager, State};
 
 /// Settings kept in xpecs.json next to the executable.
@@ -34,21 +35,14 @@ struct AppState {
     update: Mutex<Option<updater::Update>>,
 }
 
-fn exe_dir() -> PathBuf {
-    std::env::current_exe()
-        .ok()
-        .and_then(|exe| exe.parent().map(PathBuf::from))
-        .unwrap_or_else(|| PathBuf::from("."))
-}
-
 fn save_settings(settings: &Settings) {
     if let Ok(text) = serde_json::to_string_pretty(settings) {
-        let _ = fs::write(exe_dir().join("xpecs.json"), text);
+        let _ = fs::write(portable::data_dir().join("xpecs.json"), text);
     }
 }
 
 fn load_settings() -> Settings {
-    match fs::read_to_string(exe_dir().join("xpecs.json")) {
+    match fs::read_to_string(portable::data_dir().join("xpecs.json")) {
         // Some editors save UTF-8 with a BOM, which serde_json rejects.
         Ok(text) => serde_json::from_str(text.trim_start_matches('\u{feff}')).unwrap_or_default(),
         Err(_) => {
@@ -117,7 +111,7 @@ fn save_report(name: String, html: String) -> Result<String, String> {
         .chars()
         .map(|c| if c.is_ascii_alphanumeric() || c == '-' || c == '_' { c } else { '-' })
         .collect();
-    let dir = exe_dir().join("reports");
+    let dir = portable::data_dir().join("reports");
     fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
     let path = dir.join(format!("{safe}.html"));
     fs::write(&path, html).map_err(|e| e.to_string())?;
@@ -160,6 +154,8 @@ fn start_info_scan(app: AppHandle) {
 
 fn main() {
     updater::finish_previous();
+    portable::migrate(&["xpecs.json", "reports"]);
+    portable::sync_appinfo();
     tauri::Builder::default()
         .manage(AppState { settings: Mutex::new(load_settings()), info: Mutex::new(None), update: Mutex::new(None) })
         .invoke_handler(tauri::generate_handler![

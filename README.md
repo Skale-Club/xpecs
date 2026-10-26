@@ -13,8 +13,9 @@ Get the latest `Xpecs.exe` from **[Releases](https://github.com/skaleclub/xpecs/
 ## Run it
 
 Double-click `Xpecs.exe`. It needs WebView2, which comes with Windows 11.
-Settings (just the language for now) live in `xpecs.json` next to the exe;
-reports go to a `reports` folder next to it. Carry the folder anywhere.
+Settings (just the language for now) live in `Data\xpecs.json` next to the exe;
+reports go to `Data\reports`. Carry the folder anywhere. The folder follows the PortableApps layout: the exe, `App\AppInfo\` (name,
+version, icon) and `Data\` for everything the app saves.
 
 Language: the selector at the bottom left (English, Português, Español).
 

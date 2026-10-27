@@ -1,5 +1,9 @@
 # Xpecs
 
+> **Xpecs is now part of [Xpace](https://github.com/Skale-Club/xpace).** Its hardware pages
+> (summary and one tab per part, live sensors, benchmarks, HTML report) live on in Xpace, next to
+> disk space, cleaning and drivers. This repository is kept for reference and gets no new features.
+
 Portable PC care and system information for Windows: health check, junk cleaning, disk space,
 drivers, startup programs and apps, in the spirit of CCleaner, TreeSize and Driver Booster, plus
 hardware information, live sensors and benchmarks in the spirit of AIDA64. One small exe: no
@@ -341,10 +345,10 @@ Portuguese and Spanish UI text. Each app has its own executable and portable Dat
 
 | App | Purpose |
 | --- | --- |
-| [Xpecs](https://github.com/Skale-Club/xpecs) | Care for the PC (cleaning, disk space, drivers, startup, apps) and inspect hardware, live sensors and benchmarks |
+| [Xpace](https://github.com/Skale-Club/xpace) | Care for the PC (disk space, cleaning, drivers, startup, apps) and inspect hardware, live sensors and benchmarks |
 | [Xink](https://github.com/Skale-Club/xink) | Draw over the screen during presentations or recordings |
 | [Xnote](https://github.com/Skale-Club/xnote) | Transcribe meetings and turn notes into summaries and tasks |
-| [Xvert](https://github.com/Skale-Club/xvert) | Convert videos, music and pictures with FFmpeg |
+| [Xvert](https://github.com/Skale-Club/xvert) | Convert videos, music and pictures between formats |
 
 Repository access may be required depending on project visibility. Report problems through the
 relevant repository, including app version, Windows version and reproduction steps. Remove

@@ -1,6 +1,6 @@
 [package]
 name = "xpecs"
-version = "0.1.0"
+version = "0.1.1"
 description = "Xpecs: portable system information, sensors and benchmarks"
 edition = "2021"
 

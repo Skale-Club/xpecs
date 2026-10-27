@@ -8,9 +8,9 @@ Made by **[Skale Club](https://skale.club)**.
 
 ## Availability
 
-**Status checked October 26, 2026:** version 0.1.0 is in source control; no GitHub Release or
-downloadable executable has been published. Use the [build instructions](docs/DEVELOPMENT.md) until
-a release is available. Future binaries belong in
+**Status checked October 27, 2026:** source version 0.1.1. No GitHub Release or
+publicly downloadable executable has been published. Build from source using the
+[development guide](docs/DEVELOPMENT.md). Future release binaries belong in
 [Releases](https://github.com/Skale-Club/xpecs/releases).
 
 The app can offer signed updates when a newer release contains both an executable and its signature.
@@ -82,7 +82,7 @@ A push to `main` alone does not publish an executable.
 
 ## Português
 
-**Disponibilidade:** em 26/10/2026, ainda não há release nem executável publicado. Consulte
+**Disponibilidade:** em 27/10/2026, ainda não há release nem executável publicado. Consulte
 [Releases](https://github.com/Skale-Club/xpecs/releases) ou as [instruções de
 compilação](docs/DEVELOPMENT.md). As atualizações dependem de uma release assinada e da ação do
 usuário.
@@ -103,7 +103,7 @@ pequeno, sem instalação, sem driver e sem precisar de administrador.
 
 ## Español
 
-**Disponibilidad:** al 26/10/2026, aún no hay release ni ejecutable publicado. Consulte
+**Disponibilidad:** al 27/10/2026, aún no hay release ni ejecutable publicado. Consulte
 [Releases](https://github.com/Skale-Club/xpecs/releases) o las [instrucciones de
 compilación](docs/DEVELOPMENT.md). Las actualizaciones requieren una release firmada y la acción del
 usuario.
@@ -125,20 +125,22 @@ pequeño, sin instalación, sin controlador y sin necesidad de administrador.
 
 ## Skale Club apps
 
-These Windows apps belong to the [Skale-Club organization](https://github.com/Skale-Club). They
-share a dark navy interface, blue accents and English, Portuguese and Spanish UI text. Each app has
-its own executable and data folder.
+These Windows apps belong to the [Skale-Club organization](https://github.com/Skale-Club).
+They share navy interfaces, blue accents, transparent product symbols, and English,
+Portuguese and Spanish UI text. Each app has its own executable and portable Data folder.
 
 | App | Purpose |
-|---|---|
+| --- | --- |
 | [Xink](https://github.com/Skale-Club/xink) | Draw over the screen during presentations or recordings |
 | [Xpecs](https://github.com/Skale-Club/xpecs) | Inspect hardware, live sensors and benchmark results |
-| [Xcare](https://github.com/Skale-Club/xcare) | Review PC maintenance, clean selected files and manage startup programs |
-| [Xnote](https://github.com/Skale-Club/xnote) | Transcribe meeting audio and turn notes into summaries and tasks |
+| [Xcare](https://github.com/Skale-Club/xcare) | Clean selected files, manage startup programs and explicitly remove stubborn files |
+| [Xnote](https://github.com/Skale-Club/xnote) | Transcribe meetings and turn notes into summaries and tasks |
+| [Xpace](https://github.com/Skale-Club/xpace) | Analyze disk usage with a folder tree, treemap, largest files and file-type totals |
 
-Xnote currently requires repository access. Report problems through the relevant repository's Issues
-tab, including the app version, Windows version and steps to reproduce. Remove personal information
-from reports and transcripts before sharing.
+Repository access may be required depending on project visibility. Report problems through the
+relevant repository, including app version, Windows version and reproduction steps. Remove
+personal information from reports and transcripts before sharing.
+
 
 ---
 

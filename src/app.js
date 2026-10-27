@@ -125,10 +125,11 @@ function spark(canvas, x) {
   g.lineTo(w, h);
   g.lineTo(x0, h);
   g.closePath();
-  g.globalAlpha = 0.14;
-  g.fillStyle = color;
+  const fade = g.createLinearGradient(0, 0, 0, h);
+  fade.addColorStop(0, color + '55');
+  fade.addColorStop(1, color + '00');
+  g.fillStyle = fade;
   g.fill();
-  g.globalAlpha = 1;
 }
 
 // ---------- live values on the current page ----------
@@ -169,12 +170,13 @@ function tempClass(x) {
   return x.r.unit === '°C' ? ' k-temp' : '';
 }
 
+/** A live value with its sparkline; clocks show in GHz to fit the tile. */
 function tile(id, label) {
   const x = readings.get(id);
   if (!x) return '';
   const spk = x.r.kind === 'time' ? '' : `<canvas data-spark="${esc(id)}"></canvas>`;
   return `<div class="tile"><div class="lbl" title="${esc(x.r.group)}">${esc(label ?? tr(x.r.name))}</div>` +
-    `<div class="val${tempClass(x)}" data-v="${esc(id)}"></div>${spk}</div>`;
+    `<div class="val${tempClass(x)}" data-v="${esc(id)}"${x.r.unit === 'MHz' ? ' data-f="ghz"' : ''}></div>${spk}</div>`;
 }
 
 // ---------- pages ----------
@@ -213,6 +215,9 @@ function go(page) {
   renderNav();
   pageEl.scrollTop = 0;
   render();
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    pageEl.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 240, easing: 'cubic-bezier(.2, .7, .2, 1)' });
+  }
 }
 
 function render() {
@@ -484,10 +489,26 @@ async function toggleStress() {
 
 // ---------- report ----------
 
-function reportHtml() {
+/** An app image as a data URL, so the saved report shows it on its own. */
+async function dataUrl(src) {
+  try {
+    const blob = await (await fetch(src)).blob();
+    return await new Promise((done) => {
+      const reader = new FileReader();
+      reader.onload = () => done(reader.result);
+      reader.onerror = () => done('');
+      reader.readAsDataURL(blob);
+    });
+  } catch (_) {
+    return '';
+  }
+}
+
+async function reportHtml() {
   const now = new Date();
+  const [logo, skale] = await Promise.all([dataUrl('logo.png'), dataUrl('skaleclub.png')]);
   const table = (rows) => `<table>${rows.map((r) => `<tr>${r.map((c) => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</table>`;
-  let body = `<h1>Xpecs · ${esc(info.summary.board?.computer || '')}</h1>` +
+  let body = `<h1>${logo ? `<img src="${logo}" alt="">` : ''}Xpecs · ${esc(info.summary.board?.computer || '')}</h1>` +
     `<p class="meta">${esc(t('generated'))} ${esc(now.toLocaleString(locale()))}</p>`;
   for (const section of info.sections) {
     body += `<h2>${esc(t(section.id))}</h2>`;
@@ -511,9 +532,12 @@ function reportHtml() {
   const css = 'body{font:14px/1.5 "Segoe UI",system-ui,sans-serif;color:#18213a;max-width:980px;margin:32px auto;padding:0 24px}' +
     'h1{color:#1c53a3;margin-bottom:0}h2{color:#1c53a3;border-bottom:2px solid #dfe6f5;padding-bottom:4px;margin-top:32px}' +
     'h3{margin:18px 0 6px;font-size:14px;color:#3b5bbe}.meta{color:#6b7488}table{border-collapse:collapse;width:100%}' +
-    'td{padding:5px 10px 5px 0;border-bottom:1px solid #eef1f7;vertical-align:top}td:first-child{color:#6b7488;width:34%}';
+    'td{padding:5px 10px 5px 0;border-bottom:1px solid #eef1f7;vertical-align:top}td:first-child{color:#6b7488;width:34%}' +
+    'h1{display:flex;align-items:center;gap:14px}h1 img{width:48px;height:48px}' +
+    'footer{display:flex;align-items:center;gap:8px;margin-top:40px;padding-top:12px;border-top:1px solid #dfe6f5;color:#6b7488;font-size:12px}' +
+    'footer img{width:22px;height:22px}';
   return `<!doctype html><html lang="${language}"><head><meta charset="utf-8"><title>Xpecs report</title>` +
-    `<style>${css}</style></head><body>${body}<footer style="margin-top:40px;padding-top:12px;border-top:1px solid #dfe6f5;color:#6b7488;font-size:12px">Xpecs · <a href="https://skale.club">Skale Club</a></footer></body></html>`;
+    `<style>${css}</style></head><body>${body}<footer>${skale ? `<img src="${skale}" alt="">` : ''}Xpecs · <a href="https://skale.club">Skale Club</a></footer></body></html>`;
 }
 
 async function exportReport() {
@@ -523,7 +547,7 @@ async function exportReport() {
   const stamp = `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}`;
   const name = `xpecs-${info.summary.board?.computer || 'pc'}-${stamp}`;
   try {
-    const path = await invoke('save_report', { name, html: reportHtml() });
+    const path = await invoke('save_report', { name, html: await reportHtml() });
     toast(t('saved', { path }));
   } catch (e) {
     toast(t('failed', { error: e }));

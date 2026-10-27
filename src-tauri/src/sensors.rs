@@ -59,11 +59,33 @@ struct Counters {
     net_out: Option<usize>,
 }
 
+/// Starts sampling once; later calls do nothing.
 pub fn spawn(app: AppHandle) {
-    let _ = std::thread::Builder::new().name("sensors".into()).spawn(move || run(app));
+    static STARTED: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+    if STARTED.swap(true, std::sync::atomic::Ordering::SeqCst) {
+        return;
+    }
+    let _ = std::thread::Builder::new().name("sensors".into()).spawn(move || {
+        run(|readings| {
+            let _ = app.emit("sensors", &readings);
+            true
+        })
+    });
 }
 
-fn run(app: AppHandle) {
+/// One set of readings, taken over about a second (rate counters need two
+/// samples).
+pub fn sample() -> Vec<Reading> {
+    let mut taken = Vec::new();
+    run(|readings| {
+        taken = readings;
+        false
+    });
+    taken
+}
+
+/// Samples every second and hands each set to `sink` until it returns false.
+fn run(mut sink: impl FnMut(Vec<Reading>) -> bool) {
     let com = COMLibrary::new().ok();
     let disk_names = disk_names(com);
 
@@ -129,7 +151,9 @@ fn run(app: AppHandle) {
             }
         }
 
-        let _ = app.emit("sensors", &out.0);
+        if !sink(out.0) {
+            return;
+        }
         std::thread::sleep(Duration::from_millis(1000).saturating_sub(started.elapsed()));
     }
 }

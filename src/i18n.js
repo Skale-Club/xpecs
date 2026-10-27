@@ -1,16 +1,18 @@
 'use strict';
 
 // Interface texts (ui) and translations of the English labels the Rust side
-// sends (labels). Anything missing falls back to English.
+// sends (labels). Anything missing falls back to English. Page files add
+// their own texts with addTexts().
 const I18N = {
   en: {
     locale: 'en-US',
     ui: {
-      tagline: 'System information', madeBy: 'Made by',
+      tagline: 'PC care & system info', madeBy: 'Made by',
+      groupCare: 'PC care', groupHardware: 'Hardware', groupTools: 'Tools', hardware: 'Hardware',
       summary: 'Summary', cpu: 'Processor', board: 'Motherboard', memory: 'Memory', gpu: 'Graphics',
       storage: 'Storage', network: 'Network', os: 'Operating system', sensors: 'Sensors', bench: 'Benchmarks',
       export: 'Export report', loading: 'Reading the hardware…', waiting: 'Waiting for the first readings…',
-      live: 'Live', copied: 'Copied', saved: 'Report saved to {path}', failed: 'Could not save: {error}',
+      live: 'Live', copied: 'Copied', saved: 'Report saved to {path}', saveFailed: 'Could not save: {error}',
       coresHybrid: '{cores} cores ({p}P + {e}E) · {threads} threads', cores: '{cores} cores · {threads} threads',
       base: '{ghz} base', modules: '{n} × {size} · {speed} MT/s', vram: '{size} VRAM', displayCount: '{n} displays', display1: '1 display', build: 'Build {b}',
       displays: 'Displays', noData: 'Not available',
@@ -39,11 +41,12 @@ const I18N = {
   pt: {
     locale: 'pt-BR',
     ui: {
-      tagline: 'Informações do sistema', madeBy: 'Feito pela',
+      tagline: 'Cuidado do PC e sistema', madeBy: 'Feito pela',
+      groupCare: 'Cuidado do PC', groupHardware: 'Hardware', groupTools: 'Ferramentas', hardware: 'Hardware',
       summary: 'Resumo', cpu: 'Processador', board: 'Placa-mãe', memory: 'Memória', gpu: 'Vídeo',
       storage: 'Armazenamento', network: 'Rede', os: 'Sistema operacional', sensors: 'Sensores', bench: 'Benchmarks',
       export: 'Exportar relatório', loading: 'Lendo o hardware…', waiting: 'Aguardando as primeiras leituras…',
-      live: 'Ao vivo', copied: 'Copiado', saved: 'Relatório salvo em {path}', failed: 'Não foi possível salvar: {error}',
+      live: 'Ao vivo', copied: 'Copiado', saved: 'Relatório salvo em {path}', saveFailed: 'Não foi possível salvar: {error}',
       coresHybrid: '{cores} núcleos ({p}P + {e}E) · {threads} threads', cores: '{cores} núcleos · {threads} threads',
       base: '{ghz} base', modules: '{n} × {size} · {speed} MT/s', vram: '{size} de VRAM', displayCount: '{n} monitores', display1: '1 monitor', build: 'Build {b}',
       displays: 'Monitores', noData: 'Indisponível',
@@ -98,11 +101,12 @@ const I18N = {
   es: {
     locale: 'es-ES',
     ui: {
-      tagline: 'Información del sistema', madeBy: 'Hecho por',
+      tagline: 'Cuidado del PC y sistema', madeBy: 'Hecho por',
+      groupCare: 'Cuidado del PC', groupHardware: 'Hardware', groupTools: 'Herramientas', hardware: 'Hardware',
       summary: 'Resumen', cpu: 'Procesador', board: 'Placa base', memory: 'Memoria', gpu: 'Gráficos',
       storage: 'Almacenamiento', network: 'Red', os: 'Sistema operativo', sensors: 'Sensores', bench: 'Benchmarks',
       export: 'Exportar informe', loading: 'Leyendo el hardware…', waiting: 'Esperando las primeras lecturas…',
-      live: 'En vivo', copied: 'Copiado', saved: 'Informe guardado en {path}', failed: 'No se pudo guardar: {error}',
+      live: 'En vivo', copied: 'Copiado', saved: 'Informe guardado en {path}', saveFailed: 'No se pudo guardar: {error}',
       coresHybrid: '{cores} núcleos ({p}P + {e}E) · {threads} hilos', cores: '{cores} núcleos · {threads} hilos',
       base: '{ghz} base', modules: '{n} × {size} · {speed} MT/s', vram: '{size} de VRAM', displayCount: '{n} monitores', display1: '1 monitor', build: 'Compilación {b}',
       displays: 'Pantallas', noData: 'No disponible',
@@ -167,6 +171,20 @@ function setLanguage(code) {
 function t(key, vars = {}) {
   const text = I18N[language].ui[key] ?? I18N.en.ui[key] ?? key;
   return text.replace(/\{(\w+)\}/g, (_, name) => vars[name] ?? '');
+}
+
+/** [name, description] from cats, plans or tools. */
+function pair(table, id) {
+  return I18N[language][table]?.[id] ?? I18N.en[table]?.[id] ?? [id, ''];
+}
+
+/** Adds a page file's texts: { en: { ui: {...}, cats: {...} }, pt: ..., es: ... }. */
+function addTexts(more) {
+  for (const [lang, tables] of Object.entries(more)) {
+    for (const [table, entries] of Object.entries(tables)) {
+      I18N[lang][table] = Object.assign(I18N[lang][table] || {}, entries);
+    }
+  }
 }
 
 /** A label or value from the Rust side, translated when we know it. */

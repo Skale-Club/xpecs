@@ -37,13 +37,85 @@ belongs beside that executable, including when running a development build.
 
 ## Architecture
 
-Rust gathers hardware information through WMI, CPUID and Windows APIs, with NVML for supported
-NVIDIA readings. A background sensor loop emits live values to the frontend. Benchmarks run
-separately from the UI; the frontend renders the navigation, graphs and HTML report.
+Xpecs is one window with a page per area. Each area has its own Rust module, with its commands and
+state, and its own page file; `main.rs` keeps the settings, updates and the list of commands.
 
-All four apps use the same palette: navy surfaces, primary blue `#5173D6` and soft blue `#8FA9EE`.
-Keep English, Portuguese and Spanish UI strings consistent. Settings and application data use the
-portable data directory; do not commit runtime data, API credentials or private signing keys.
+| Area | Rust | Page files |
+|---|---|---|
+| PC care: overview, cleaner, startup, apps, optimize | `care.rs` (commands), `cleaner.rs`, `startup.rs`, `apps.rs`, `icons.rs`, `power.rs`, `win.rs` | `care.js`, `care-i18n.js`, `care.css` |
+| Force Delete | `force_delete.rs` | `force-delete.js`, `force-delete.css` |
+| Disk space | `space.rs` (commands), `scan.rs`, `find.rs`, `space_win.rs` | `space.js`, `space-i18n.js`, `space.css` |
+| Drivers | `drivers.rs` | `drivers.js` (texts inside), `drivers.css` |
+| Hardware, sensors, benchmarks | `info.rs`, `sensors.rs`, `bench.rs`, `winapi.rs` | `hardware.js`, `brands.js` |
+| Window, menu, texts | `main.rs`, `portable.rs`, `updater.rs` | `app.js`, `common.js`, `i18n.js`, `style.css`, `skale.css` |
+
+`common.js` holds what pages share (Tauri calls, formatting, the toast, the confirm box, icons) and
+the page registry `PAGES`: each page file adds `{ render, actions, show, nav, cls }` entries, and
+`app.js` draws the menu groups, the header and the chosen page. Page files load in the order
+`index.html` lists them. `addTexts()` merges each area's texts into `I18N`; Disk space keeps its
+keys under the `sp_` prefix, and its stylesheet only applies under `#page.space`.
+
+PC care: Rust handles scan snapshots, deletion boundaries, registry startup flags, installed-program
+entries and Windows maintenance commands. JavaScript renders scan progress, user confirmations and
+the heuristic health score. Keep scan and deletion separate; do not turn viewing a page into a
+destructive action.
+
+Disk space: Rust walks the chosen folder in parallel (rayon) and keeps every folder, with its size
+and counts, in memory; files are only counted, plus the largest files and per-extension totals. The
+page asks for one folder at a time (`open_folder`), and that folder's files are read from disk when
+it is opened. Junctions and directory symbolic links are listed but never followed. A scan emits
+`progress` events while it runs and can be cancelled. `find.rs` answers the search box
+(`find_folders`): a typed path is completed from its parent folder on disk; anything else searches
+an index of folder names, built on a background thread the first time someone searches, walking the
+profile and the local drives together breadth first (network drives are left out; at most 250,000
+folders, 7 levels or 45 seconds). `known_folders` reads the user's folders with
+`SHGetKnownFolderPath`; `pick_scan_folder` is `IFileOpenDialog` in folder mode. The last eight
+scanned folders are kept in `recent` in the settings. `recycle` sends a selection to the Recycle Bin
+with `SHFileOperationW`; permanent deletion goes through the same `force_delete.rs` as Force Delete
+(one copy now), and only accepts items inside the scanned folder. Afterwards `Tree::forget` takes
+what is gone out of the totals, so the page does not need a rescan.
+
+Drivers: `drivers.rs` reads `Win32_PnPSignedDriver` and the devices with a
+`ConfigManagerErrorCode` through WMI (a few seconds; the page loads it in the background at start so
+the overview can count problems). Windows Update is reached through PowerShell and the
+`Microsoft.Update.Session` COM object: the scripts use only single quotes, so each travels as one
+`-Command` argument with no execution-policy change. Install takes update ids (GUIDs only reach the
+script), creates a restore point with `Checkpoint-Computer` first unless the user accepted going
+without one, downloads and installs, and skips updates that need a license accepted. Backup runs
+`pnputil /export-driver *`. Installing and backup need administrator rights.
+
+Hardware: Rust gathers information through WMI, CPUID and Windows APIs, with NVML for supported
+NVIDIA readings. The sensor loop starts the first time a hardware page is opened (`start_sensors`)
+and emits live values once a second. Benchmarks run separately from the UI; the page renders the
+graphs and the HTML report.
+
+All the Skale X apps use the same palette: navy surfaces, primary blue `#5173D6` and soft blue
+`#8FA9EE`. Keep English, Portuguese and Spanish UI strings consistent. Settings and application data
+use the portable data directory; do not commit runtime data, API credentials or private signing
+keys.
+
+## Local MCP server
+
+`Xpecs.exe --mcp` makes `main()` call `mcp_tools::serve()` before Tauri starts, so no window opens.
+`mcp.rs` is the MCP server over stdio (one JSON-RPC 2.0 message per line: `initialize`, `ping`,
+`tools/list`, `tools/call`, plus the shared `app_info` tool). It is the same file in every Skale
+app: change it in one and copy it to the others. `mcp_tools.rs` lists this app's tools and calls the
+same modules the window uses, grouped by area (PC care, disk space, drivers, hardware). Keep stdout
+for protocol messages only (log with `eprintln!`), and return `Err` from a tool instead of
+panicking: release builds abort on panic. Release builds use the GUI subsystem and still talk over
+the pipes an MCP client opens.
+
+To check by hand, write these lines to the exe's stdin; each request gets one JSON line back:
+
+```text
+{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18"}}
+{"jsonrpc":"2.0","id":2,"method":"tools/list"}
+{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"app_info","arguments":{}}}
+```
+
+Any MCP client can drive it the same way, for example the MCP Inspector:
+`npx @modelcontextprotocol/inspector "<path>\Xpecs.exe" --mcp`.
+`cargo test mcp` runs the protocol tests.
 
 ## Validate a change
 
@@ -51,15 +123,41 @@ Run the checks above when changing application code. Unit tests do not validate 
 devices, capture software or external APIs. For documentation-only changes, compare claims with the
 implementation and check links and commands.
 
-- Compare the summary with Windows' reported hardware and verify missing values stay understandable.
-- Check live sensors and export an HTML report; inspect the saved report.
-- Run an appropriate CPU and memory benchmark on a test machine.
-- Start and stop stress testing, then check that closing the app also stops it.
-- Check the behavior with and without LibreHardwareMonitor and supported NVIDIA hardware.
+- Go through every page in the three languages, as a standard user and as administrator.
+- PC care: review the overview, scan categories and cancellation/confirmation flows. Test deletion
+  only with disposable files in a controlled Windows environment. Confirm recent temporary files,
+  reparse points and files outside category roots are protected. Verify a disposable startup entry
+  can be disabled and re-enabled. Check that uninstall and maintenance buttons open the intended
+  Windows tools; do not test them on valuable installed software.
+- Disk space: scan a whole drive and compare totals with Explorer's folder properties (expect small
+  differences where folders can't be read). Scan a folder containing a junction and check it is
+  listed as a link and not counted. Cancel a scan midway, then rescan; open folders, the treemap and
+  both lists; export a CSV. In the search box: type `C:\Us`, use Tab to go down a few levels and
+  Enter to scan; search a name and watch results fill in; try `%LOCALAPPDATA%`; scan from a known
+  folder and a recent one, remove a recent one, and drop a folder from Explorer on the window.
+  Delete a file and a folder to the Recycle Bin and restore them; delete a file that an app has open
+  permanently and with "close the apps"; try a protected folder (Documents itself) and check it is
+  refused; check the totals after each. `cargo test -- --ignored recycles` sends a small temporary
+  file to the real Recycle Bin.
+- Drivers: compare the problem list with Device Manager. Search Windows Update and compare with
+  Settings › Windows Update › Optional updates. On a test machine, install one update as
+  administrator and check the restore point in System Restore; turn System Restore off and check the
+  "install without a restore point" question. Back up drivers and look at the folder.
+- Hardware: compare the summary with Windows' reported hardware and verify missing values stay
+  understandable. Check live sensors and export an HTML report; inspect the saved report. Run an
+  appropriate CPU and memory benchmark on a test machine. Start and stop stress testing, then check
+  that closing the app also stops it. Check the behavior with and without LibreHardwareMonitor and
+  supported NVIDIA hardware.
+
+To look at the window without the native side, copy `src` somewhere, add a script that defines
+`window.__TAURI__` with fake answers before the others in `index.html`, and serve the folder.
 
 Keep documentation aligned with observed behavior. Update the README's English instructions and
 Portuguese/Spanish summaries together. A feature listed in the README should have an implemented
 workflow; a release link should not imply that a binary exists before publication succeeds.
+
+See [Force Delete implementation and validation](FORCE_DELETE.md) for its path/process boundaries,
+fixture tests, delayed-registration semantics and remaining manual acceptance checks.
 
 ## Publish a release
 

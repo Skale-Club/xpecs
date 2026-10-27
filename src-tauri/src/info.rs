@@ -158,7 +158,7 @@ fn ghz(mhz: u64) -> String {
 }
 
 /// "20231015000000.000000+000" -> "2023-10-15" (or with the time).
-fn cim_date(s: &str, with_time: bool) -> String {
+pub(crate) fn cim_date(s: &str, with_time: bool) -> String {
     if s.len() < 8 || !s.as_bytes()[..8].iter().all(u8::is_ascii_digit) {
         return String::new();
     }

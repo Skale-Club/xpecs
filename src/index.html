@@ -5,6 +5,10 @@
   <title>Xpecs</title>
   <link rel="stylesheet" href="skale.css">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="care.css">
+  <link rel="stylesheet" href="force-delete.css">
+  <link rel="stylesheet" href="drivers.css">
+  <link rel="stylesheet" href="space.css">
 </head>
 <body>
   <aside id="side">
@@ -30,12 +34,43 @@
     <div id="update-bar" hidden></div>
     <header>
       <h1 id="title"></h1>
-      <button id="export" class="btn primary"></button>
+      <div class="header-side">
+        <span id="actions"></span>
+        <span id="admin-badge"></span>
+      </div>
     </header>
     <div id="page"></div>
+    <div id="selbar" hidden></div>
   </main>
+  <div id="drop" hidden><div><span class="drop-ring"></span><b data-t="sp_dropFolder"></b></div></div>
+  <div id="modal" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-text">
+      <h2 id="modal-title"></h2>
+      <p id="modal-text"></p>
+      <div class="dialog-actions">
+        <button id="modal-cancel" class="btn"></button>
+        <button id="modal-ok" class="btn primary"></button>
+      </div>
+    </div>
+  </div>
+  <div id="space-modal" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="sp-modal-title">
+      <h2 id="sp-modal-title"></h2>
+      <div id="sp-modal-body"></div>
+      <div class="dialog-actions" id="sp-modal-actions"></div>
+    </div>
+  </div>
   <div id="toast"></div>
   <script src="i18n.js"></script>
+  <script src="care-i18n.js"></script>
+  <script src="space-i18n.js"></script>
+  <script src="brands.js"></script>
+  <script src="common.js"></script>
+  <script src="care.js"></script>
+  <script src="force-delete.js"></script>
+  <script src="space.js"></script>
+  <script src="drivers.js"></script>
+  <script src="hardware.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

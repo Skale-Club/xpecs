@@ -145,7 +145,7 @@ extern "system" {
         name: *const u16,
         access: u32,
         share: u32,
-        security: *mut c_void,
+        security: *const c_void,
         disposition: u32,
         flags: u32,
         template: isize,
@@ -298,7 +298,7 @@ pub fn disk_temperature(disk: u32) -> Option<f64> {
 
     let path = wide(&format!(r"\\.\PhysicalDrive{disk}"));
     unsafe {
-        let handle = CreateFileW(path.as_ptr(), 0, SHARE_READ_WRITE, null_mut(), OPEN_EXISTING, 0, 0);
+        let handle = CreateFileW(path.as_ptr(), 0, SHARE_READ_WRITE, std::ptr::null(), OPEN_EXISTING, 0, 0);
         if handle == -1 {
             return None;
         }

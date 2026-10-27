@@ -187,6 +187,21 @@ pub fn cpu_float(all_threads: bool) -> f64 {
 
 static STRESS: Mutex<Option<Arc<AtomicBool>>> = Mutex::new(None);
 
+/// Runs one test by id ("mem-read", "cpu-fp-n"...).
+pub fn run(test: &str) -> Result<f64, String> {
+    Ok(match test {
+        "mem-read" => memory_read(),
+        "mem-write" => memory_write(),
+        "mem-copy" => memory_copy(),
+        "mem-latency" => memory_latency(),
+        "cpu-int-1" => cpu_integer(false),
+        "cpu-int-n" => cpu_integer(true),
+        "cpu-fp-1" => cpu_float(false),
+        "cpu-fp-n" => cpu_float(true),
+        other => return Err(format!("unknown test {other}")),
+    })
+}
+
 /// Loads every logical processor with mixed integer and floating point work
 /// until `stop_stress` is called.
 pub fn start_stress() {

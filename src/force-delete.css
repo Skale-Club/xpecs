@@ -1,0 +1,39 @@
+/* Force Delete follows the shared Skale Club navy / blue visual language. */
+.fd-intro { display: flex; align-items: center; gap: 16px; margin: 8px 0 24px; max-width: 760px; }
+.fd-symbol { display: grid; place-items: center; width: 52px; height: 52px; flex: none; border: 1px solid var(--line); border-radius: 14px; background: var(--raised); color: var(--brand-soft); }
+.fd-symbol svg { width: 26px; height: 26px; }
+.fd-intro h2 { margin: 0 0 4px; font-size: 20px; font-weight: 600; letter-spacing: -.3px; }
+.fd-intro p { margin: 0; color: var(--muted); }
+.fd-drop { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 28px 18px 20px; margin: 14px 0 18px; border: 1px dashed rgba(143,169,238,.4); border-radius: 12px; background: rgba(81,115,214,.045); text-align: center; }
+.fd-drop.over { border-color: var(--brand-soft); background: rgba(81,115,214,.18); }
+.fd-drop b { font-size: 16px; font-weight: 600; }
+.fd-drop > span { color: var(--muted); font-size: 13px; }
+.fd-drop .toolbar { margin: 14px 0 0; justify-content: center; }
+.fd-path-input { margin-top: 6px; }
+.fd-picked { border-top: 1px solid var(--line); margin-top: 8px; max-height: 230px; overflow-y: auto; }
+.fd-picked > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.fd-picked span { overflow-wrap: anywhere; font: 12px/1.6 Consolas, monospace; }
+.fd-selection-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+.fd-paths { list-style: none; padding: 0; margin: 14px 0; max-height: 220px; overflow-y: auto; }
+.fd-paths li { overflow-wrap: anywhere; font: 12px/1.6 Consolas, monospace; padding: 4px 0; }
+.fd-status { display: inline-block; color: var(--brand-soft); background: rgba(81,115,214,.12); padding: 3px 9px; border-radius: 6px; font-size: 12px; }
+.fd-status.warn { color: var(--warn); background: rgba(245,196,81,.1); }
+.fd-facts { display: flex; gap: 32px; flex-wrap: wrap; padding: 16px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.fd-facts span { display: flex; flex-direction: column; color: var(--muted); font-size: 12px; }
+.fd-facts b { color: var(--fg); font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.fd-review h4 { margin: 18px 0 8px; font-size: 14px; font-weight: 600; }
+.fd-process { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.fd-process > div { display: flex; gap: 12px; flex-wrap: wrap; align-items: baseline; }
+.fd-actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 22px 0 12px; }
+.fd-warning { color: var(--warn); font-size: 13px; }
+.fd-error { border-color: rgba(255,84,104,.5); color: #ff9aa6; overflow-wrap: anywhere; }
+.fd-result { border-color: rgba(143,169,238,.4); }
+.fd-errors { padding-left: 20px; max-height: 280px; overflow-y: auto; }
+.fd-errors li { margin: 12px 0; overflow-wrap: anywhere; }
+.fd-errors b { display: block; font: 12px/1.6 Consolas, monospace; }
+.fd-errors span { color: var(--muted); font-size: 13px; }
+.fd-footnote { max-width: 760px; line-height: 1.7; }
+.fd-review .note { line-height: 1.7; }
+.dialog { max-height: 85vh; overflow-y: auto; }
+button:focus-visible, .fd-path-input input:focus-visible { outline: 2px solid var(--brand-soft); outline-offset: 3px; }
+@media (max-width: 1050px) { .fd-actions .btn { flex: 1 1 200px; } }

@@ -11,7 +11,7 @@ fn threads() -> usize {
     std::thread::available_parallelism().map(|n| n.get()).unwrap_or(4)
 }
 
-/// Large enough to defeat every cache level (the i9's L3 is 30 MB).
+/// Total memory buffer size, partitioned among workers. Cache sizes vary by CPU.
 const BUFFER: usize = 512 << 20;
 const PASSES: usize = 4;
 

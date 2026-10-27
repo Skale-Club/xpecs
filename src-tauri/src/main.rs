@@ -14,7 +14,7 @@ use serde_json::Value;
 use std::{fs, process::Command, sync::Mutex};
 use tauri::{AppHandle, Emitter, Manager, State};
 
-/// Settings kept in xpecs.json next to the executable.
+/// Settings kept in Data/xpecs.json beside the executable.
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(default, rename_all = "camelCase")]
 struct Settings {
@@ -103,7 +103,7 @@ fn set_stress(running: bool) {
 fn open_site() {
     let _ = Command::new("explorer.exe").arg("https://skale.club").spawn();
 }
-/// Writes the HTML report into a "reports" folder next to the executable and
+/// Writes the HTML report into Data/reports beside the executable and
 /// opens it in the default browser.
 #[tauri::command]
 fn save_report(name: String, html: String) -> Result<String, String> {

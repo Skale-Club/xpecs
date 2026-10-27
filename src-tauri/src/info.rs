@@ -81,20 +81,30 @@ fn n(row: &Row, key: &str) -> u64 {
 }
 
 fn num(v: Option<&Variant>) -> u64 {
-    match v {
-        Some(Variant::String(s)) => s.trim().parse().unwrap_or(0),
-        Some(Variant::UI1(v)) => *v as u64,
-        Some(Variant::UI2(v)) => *v as u64,
-        Some(Variant::UI4(v)) => *v as u64,
-        Some(Variant::UI8(v)) => *v,
-        Some(Variant::I1(v)) => (*v).max(0) as u64,
-        Some(Variant::I2(v)) => (*v).max(0) as u64,
-        Some(Variant::I4(v)) => (*v).max(0) as u64,
-        Some(Variant::I8(v)) => (*v).max(0) as u64,
-        Some(Variant::R4(v)) => v.max(0.0) as u64,
-        Some(Variant::R8(v)) => v.max(0.0) as u64,
-        _ => 0,
-    }
+    opt_num(v).unwrap_or(0)
+}
+
+/// For codes where 0 means something (health: 0 is Healthy), so a missing
+/// or null value must stay missing instead of becoming 0.
+fn code(row: &Row, key: &str) -> Option<u64> {
+    opt_num(row.get(key))
+}
+
+fn opt_num(v: Option<&Variant>) -> Option<u64> {
+    Some(match v? {
+        Variant::String(s) => s.trim().parse().ok()?,
+        Variant::UI1(v) => *v as u64,
+        Variant::UI2(v) => *v as u64,
+        Variant::UI4(v) => *v as u64,
+        Variant::UI8(v) => *v,
+        Variant::I1(v) => (*v).max(0) as u64,
+        Variant::I2(v) => (*v).max(0) as u64,
+        Variant::I4(v) => (*v).max(0) as u64,
+        Variant::I8(v) => (*v).max(0) as u64,
+        Variant::R4(v) => v.max(0.0) as u64,
+        Variant::R8(v) => v.max(0.0) as u64,
+        _ => return None,
+    })
 }
 
 fn strings(row: &Row, key: &str) -> Vec<String> {
@@ -214,11 +224,11 @@ fn media_type(code: u64) -> &'static str {
     }
 }
 
-fn health(code: u64) -> &'static str {
+fn health(code: Option<u64>) -> &'static str {
     match code {
-        0 => "Healthy",
-        1 => "Warning",
-        2 => "Unhealthy",
+        Some(0) => "Healthy",
+        Some(1) => "Warning",
+        Some(2) => "Unhealthy",
         _ => "Unknown",
     }
 }
@@ -641,7 +651,7 @@ fn storage_section(wmi: &Wmi) -> (Section, Value) {
         g.row("Type", media_type(n(d, "MediaType")));
         g.row("Capacity", bytes(n(d, "Size")));
         g.row("Firmware", s(d, "FirmwareVersion"));
-        g.row("Health", health(n(d, "HealthStatus")));
+        g.row("Health", health(code(d, "HealthStatus")));
         summary.push(json!({
             "name": s(d, "FriendlyName"),
             "size": n(d, "Size"),
@@ -761,4 +771,21 @@ fn os_section(wmi: &Wmi) -> (Section, Value) {
         groups.push(audio);
     }
     (Section { id: "os", groups }, summary)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn missing_disk_health_is_unknown_not_healthy() {
+        let mut row = Row::new();
+        assert_eq!(health(code(&row, "HealthStatus")), "Unknown");
+        row.insert("HealthStatus".into(), Variant::Null);
+        assert_eq!(health(code(&row, "HealthStatus")), "Unknown");
+        row.insert("HealthStatus".into(), Variant::UI2(0));
+        assert_eq!(health(code(&row, "HealthStatus")), "Healthy");
+        row.insert("HealthStatus".into(), Variant::UI2(2));
+        assert_eq!(health(code(&row, "HealthStatus")), "Unhealthy");
+    }
 }
